@@ -1,0 +1,5 @@
+{
+  "description": "Test repository managed by tf-github-org",
+  "visibility": "public",
+  "topics": ["terraform", "test"]
+}
