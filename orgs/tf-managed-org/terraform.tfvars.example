@@ -1,0 +1,25 @@
+github_org    = "tf-managed-org"
+billing_email = "billing@example.com"
+
+company     = "Example Co"
+description = "Managed by tf-github-org"
+
+default_repository_permission   = "read"
+members_can_create_repositories = false
+
+teams = {
+  platform = {
+    description = "Platform engineering"
+    privacy     = "closed"
+    members = {
+      "github-user-1" = "maintainer"
+      "github-user-2" = "member"
+    }
+  }
+  qa = {
+    description = "Quality assurance"
+    privacy     = "closed"
+  }
+}
+
+# Repositories are defined in repos/<repo-name>/repo.json
