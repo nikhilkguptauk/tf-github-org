@@ -1,3 +1,5 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
 name: My First CloudBees Workflow
 
 # 1. Define when this workflow should run
@@ -13,7 +15,7 @@ jobs:
     # 3. Define the sequential steps for this job
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v4 
+        uses: cloudbees-io/checkout@v1
 
       - name: Run a simple echo command
         run: echo "Hello from CloudBees Unify!"
