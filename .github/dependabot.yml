@@ -1,0 +1,25 @@
+version: 2
+updates:
+  # Pin and update the GitHub Actions used by workflows
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+
+  # Provider and module version updates
+  - package-ecosystem: terraform
+    directory: /orgs/tf-managed-org
+    schedule:
+      interval: weekly
+  - package-ecosystem: terraform
+    directory: /modules/github-org-settings
+    schedule:
+      interval: weekly
+  - package-ecosystem: terraform
+    directory: /modules/github-team
+    schedule:
+      interval: weekly
+  - package-ecosystem: terraform
+    directory: /modules/github-repository
+    schedule:
+      interval: weekly

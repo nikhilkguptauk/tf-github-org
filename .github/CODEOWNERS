@@ -1,0 +1,6 @@
+# Every change needs review from the repository owner.
+*                       @nikhilkguptauk
+
+# Workflows and dependency pins control what runs with repository access.
+/.github/               @nikhilkguptauk
+/.cloudbees/           @nikhilkguptauk

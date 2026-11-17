@@ -16,3 +16,8 @@
 | Provider version pinning | Pins the GitHub provider to `~> 6.0` and commits `.terraform.lock.hcl` per org. |
 | Token handling | Reads the GitHub token from the `GITHUB_TOKEN` environment variable, and git-ignores `*.tfvars` files. |
 | Outputs | Exposes the org settings ID, team IDs and slugs, and repository URLs. |
+| CloudBees job trigger | Queues a CloudBees CI job over its REST API with `cloudbees/trigger-job.sh`, optionally passing `KEY=VALUE` build parameters. |
+| CloudBees credentials template | Provides `cloudbees/.env.example` listing the controller URL, user, and API token variables the trigger script reads. |
+| CloudBees CSRF handling | The trigger script fetches a Jenkins crumb automatically and skips it when the controller has crumbs disabled. |
+| CloudBees Unify workflow | Defines `.cloudbees/workflows/build.yml`, which runs on pushes to `main`: checkout, a shell step, a Terraform format check, and a `validate` for each module. |
+| Workflow validation | Validates each module with `terraform init -backend=false` and `terraform validate` in a `hashicorp/terraform` container. |
