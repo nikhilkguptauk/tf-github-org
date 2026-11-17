@@ -21,10 +21,14 @@ jobs:
         uses: docker://alpine:3.23
         run: echo "Hello from CloudBees Unify!"
 
-      - name: Execute a multi-line script
-        uses: docker://node:20
+      - name: Check Terraform formatting
+        uses: docker://hashicorp/terraform:1.9
+        run: terraform fmt -check -recursive
+
+      - name: Validate Terraform modules
+        uses: docker://hashicorp/terraform:1.9
         run: |
-          echo "Compiling code..."
-          node --version
-          npm install
-          npm test
+          for dir in modules/*/; do
+            terraform -chdir="$dir" init -backend=false -input=false
+            terraform -chdir="$dir" validate
+          done
