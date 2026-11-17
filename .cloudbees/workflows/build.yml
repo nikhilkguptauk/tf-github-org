@@ -1,0 +1,26 @@
+name: My First CloudBees Workflow
+
+# 1. Define when this workflow should run
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allows you to trigger it manually from the UI
+
+# 2. Define the jobs that will execute
+jobs:
+  build-and-test:
+    # 3. Define the sequential steps for this job
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4 
+
+      - name: Run a simple echo command
+        run: echo "Hello from CloudBees Unify!"
+
+      - name: Execute a multi-line script
+        run: |
+          echo "Compiling code..."
+          node --version
+          npm install
+          npm test

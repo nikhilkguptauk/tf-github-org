@@ -1,75 +1,18 @@
-# tf-github-org
-
-Terraform code to manage GitHub organizations. Each org has its own folder, state, and set of teams and repositories. Reusable building blocks live in `modules/`.
-
-## Layout
-
-```
-modules/                        Reusable building blocks (no backend, no provider config)
-  github-org-settings/          Organization profile and default permissions
-  github-team/                  Teams and team memberships
-  github-repository/            Repositories and team access
-orgs/
-  <org-name>/                   One root configuration per GitHub org
-    versions.tf                 Backend: Terraform Cloud workspace tf-github-org-<org-name>
-    providers.tf                GitHub provider for this org
-    main.tf                     Calls the modules for this org
-    variables.tf
-    outputs.tf
-    terraform.tfvars.example    Copy to terraform.tfvars and fill in
-```
-
-Each org folder keeps its own state in its own Terraform Cloud workspace, so orgs cannot lock or overwrite each other.
-
-## Prerequisites
-
-- Terraform >= 1.5
-- For each org, a Terraform Cloud workspace named `tf-github-org-<org-name>`, created as **CLI-driven workflow** with **Execution Mode = Local**
-- `terraform login` run once on your machine
-- A GitHub token with org admin scope for each org, exported locally:
-  ```
-  export GITHUB_TOKEN=<token>
-  ```
-
-## Setup for a new org
-
-1. Copy `orgs/tf-managed-org/` to `orgs/<org-name>/`.
-2. In `orgs/<org-name>/versions.tf`, replace `YOUR-TFC-ORG` with your Terraform Cloud organization name and change the workspace name to `tf-github-org-<org-name>`.
-3. Copy `terraform.tfvars.example` to `terraform.tfvars` and fill in the values. `*.tfvars` files are git-ignored.
-
-## Running
-
-```
-cd orgs/<org-name>
-terraform init
-terraform plan
-terraform apply
-```
-
-### Adding a repository
-
-Create a folder under the org's `repos/` directory, named after the repository, with a `repo.json` file:
-
-```
-orgs/<org-name>/repos/<repo-name>/repo.json
-```
-
-```json
-{
-  "description": "Test repository managed by tf-github-org",
-  "visibility": "public",
-  "topics": ["terraform", "test"],
-  "team_access": { "platform": "maintain" }
-}
-```
-
-Every `repos/*/repo.json` is picked up automatically on `terraform plan`. Repositories can also be declared in `terraform.tfvars` under `repositories`; both sources are merged.
-
-Team access in `repositories` refers to teams by name (the keys of `teams`), so a team must be defined in the same tfvars file before it is used.
-
-## Adding a new module
-
-1. Put reusable resources in `modules/<name>/` with `versions.tf`, `main.tf`, `variables.tf`, and `outputs.tf`.
-2. Call the module from each `orgs/<org-name>/main.tf` that needs it and add its inputs to that folder's `variables.tf`.
-
-Commit `.terraform.lock.hcl` in each org folder so provider versions stay pinned.
+| Feature | Description |
+| ------- | ----------- |
+| Organization settings | Manages the GitHub org profile (company, location, blog, billing email, description) via the `github-org-settings` module. |
+| Default repository permission | Sets the org-wide default permission and whether members can create repositories. |
+| Project toggles | Enables or disables organization-level and repository-level projects. |
+| Teams | Creates GitHub teams with a description and privacy setting (`closed` or `secret`) via the `github-team` module. |
+| Team membership | Adds users to teams as `member` or `maintainer`. |
+| Repository creation | Creates repositories with visibility, description, topics, issues, wiki, and auto-init settings via the `github-repository` module. |
+| Repository hygiene defaults | Deletes merged branches automatically and enables vulnerability alerts by default. |
+| Team access per repository | Grants teams `pull`, `triage`, `push`, `maintain`, or `admin` permission on each repository. |
+| JSON repo definitions | Auto-discovers each `orgs/<org>/repos/<name>/repo.json` file and creates that repository on plan. |
+| tfvars repo definitions | Accepts repositories in `terraform.tfvars` and merges them with the JSON definitions. |
+| Input validation | Rejects invalid visibility, privacy, team role, or permission values at plan time. |
+| Multi-org layout | Keeps one root configuration per org under `orgs/`, sharing the same modules in `modules/`. |
+| Remote state | Stores each org's state in its own Terraform Cloud workspace (`tf-github-org-<org>`) in local execution mode. |
+| Provider version pinning | Pins the GitHub provider to `~> 6.0` and commits `.terraform.lock.hcl` per org. |
+| Token handling | Reads the GitHub token from the `GITHUB_TOKEN` environment variable, and git-ignores `*.tfvars` files. |
+| Outputs | Exposes the org settings ID, team IDs and slugs, and repository URLs. |
