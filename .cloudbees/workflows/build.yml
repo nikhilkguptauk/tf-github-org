@@ -15,12 +15,14 @@ jobs:
     # 3. Define the sequential steps for this job
     steps:
       - name: Check out repository code
-        uses: cloudbees-io/checkout@v1
+        uses: https://github.com/cloudbees-io/checkout@v2
 
       - name: Run a simple echo command
+        uses: docker://alpine:3.23
         run: echo "Hello from CloudBees Unify!"
 
       - name: Execute a multi-line script
+        uses: docker://node:20
         run: |
           echo "Compiling code..."
           node --version
